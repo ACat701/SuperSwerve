@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,7 +37,11 @@ public class Drivetrain extends SubsystemBase {
   public SlewRateLimiter driveYSlewRateLimiter;
   public SlewRateLimiter steerSlewRateLimiter;
 
+  private PIDController xTransPIDController;
+  private PIDController yTransPIDController;
   private ProfiledPIDController thetaPIDController;
+
+  public HolonomicDriveController driveController;
 
   public Drivetrain() {
 
@@ -55,6 +61,16 @@ public class Drivetrain extends SubsystemBase {
     driveYSlewRateLimiter = new SlewRateLimiter(prefDrivetrain.driveRateLimit.getValue());
     steerSlewRateLimiter = new SlewRateLimiter(prefDrivetrain.steerRateLimit.getValue());
 
+    xTransPIDController = new PIDController(
+        prefDrivetrain.transP.getValue(),
+        prefDrivetrain.transI.getValue(),
+        prefDrivetrain.transD.getValue());
+
+    yTransPIDController = new PIDController(
+        prefDrivetrain.transP.getValue(),
+        prefDrivetrain.transI.getValue(),
+        prefDrivetrain.transD.getValue());
+
     thetaPIDController = new ProfiledPIDController(
         prefDrivetrain.thetaP.getValue(),
         prefDrivetrain.thetaI.getValue(),
@@ -62,6 +78,11 @@ public class Drivetrain extends SubsystemBase {
         new TrapezoidProfile.Constraints(
             Units.degreesToRadians(prefDrivetrain.maxRotationDPS.getValue()),
             Units.degreesToRadians(prefDrivetrain.maxRotationDPSPS.getValue())));
+
+    driveController = new HolonomicDriveController(
+        xTransPIDController,
+        yTransPIDController,
+        thetaPIDController);
 
     configure();
   }
@@ -76,6 +97,16 @@ public class Drivetrain extends SubsystemBase {
     pigeon.configFactoryDefault();
     resetSteerMotorEncodersToAbsolute();
 
+    xTransPIDController.setPID(
+        prefDrivetrain.transP.getValue(),
+        prefDrivetrain.transI.getValue(),
+        prefDrivetrain.transD.getValue());
+
+    yTransPIDController.setPID(
+        prefDrivetrain.transP.getValue(),
+        prefDrivetrain.transI.getValue(),
+        prefDrivetrain.transD.getValue());
+
     thetaPIDController.setPID(
         prefDrivetrain.thetaP.getValue(),
         prefDrivetrain.thetaI.getValue(),
@@ -84,6 +115,12 @@ public class Drivetrain extends SubsystemBase {
     thetaPIDController.setTolerance(prefDrivetrain.thetaTolerance.getValue());
 
     thetaPIDController.enableContinuousInput(0, Math.PI * 2);
+
+    driveController = new HolonomicDriveController(
+        xTransPIDController,
+        yTransPIDController,
+        thetaPIDController);
+
   }
 
   /**

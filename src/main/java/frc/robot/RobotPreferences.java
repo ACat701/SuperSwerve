@@ -24,6 +24,10 @@ public class RobotPreferences {
         "thetaArbitraryFeedForward", 0);
     public static final SN_DoublePreference thetaTolerance = new SN_DoublePreference("thetaTolerance", 0);
 
+    public static final SN_DoublePreference transP = new SN_DoublePreference("transP", 1);
+    public static final SN_DoublePreference transI = new SN_DoublePreference("transP", 0);
+    public static final SN_DoublePreference transD = new SN_DoublePreference("transP", 0);
+
     // FPS: feet per second
     public static final SN_DoublePreference maxSpeedFPS = new SN_DoublePreference(
         "maxSpeedMPS", 16.3);
