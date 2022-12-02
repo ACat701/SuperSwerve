@@ -1,7 +1,16 @@
 package frc.robot;
 
+import java.util.List;
+
 import com.frcteam3255.joystick.SN_F310Gamepad;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotMap.mapControllers;
@@ -27,6 +36,13 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+
+    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(0, 0, new Rotation2d()),
+        List.of(new Translation2d(1, 0), new Translation2d(1, 1), new Translation2d(0, 1)),
+        new Pose2d(0, 0, new Rotation2d()),
+        new TrajectoryConfig(Units.feetToMeters(3), Units.feetToMeters(3)));
+
     return null;
   }
 }
